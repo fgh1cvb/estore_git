@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.dao.BookMapper">
+    <!--自定义查询结果映射-->
+    <resultMap id="bookMap" type="book">
+        <id column="bid" property="id"/>
+        <result column="bname" property="name"/>
+        <result column="price" property="price"/>
+        <result column="author" property="author"/>
+        <result column="publisher" property="publisher"/>
+        <result column="pubDate" property="pubDate"/>
+        <result column="bdescription" property="description"/>
+        <result column="image" property="image"/>
+        <!--当数据存在多表连接 并且结果为 一对一的关系时 需要使用association进行结果映射的指定-->
+        <association property="category" javaType="category">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="description" property="description"/>
+        </association>
+    </resultMap>
+
+    <!--查询所有数据信息-->
+    <select id="findAllBooks" resultMap="bookMap">
+        select book.id          as bid,
+               book.name        as bname,
+               book.price,
+               book.author,
+               book.publisher,
+               book.pubDate,
+               book.description as bdescription,
+               book.image,
+               category.id,
+               category.name,
+               category.description
+        from es_book book
+                 left join
+             es_category category on book.category_id = category.id
+    </select>
+
+    <!--根据id查询书籍信息-->
+    <select id="findBookById" resultMap="bookMap">
+        select book.id          as bid,
+               book.name        as bname,
+               book.price,
+               book.author,
+               book.publisher,
+               book.pubDate,
+               book.description as bdescription,
+               book.image,
+               category.id,
+               category.name,
+               category.description
+        from es_book book
+                 left join
+             es_category category on book.category_id = category.id
+        where book.id = #{id}
+    </select>
+
+    <select id="findBooksByCategoryId" resultMap="bookMap">
+        select book.id          as bid,
+               book.name        as bname,
+               book.price,
+               book.author,
+               book.publisher,
+               book.pubDate,
+               book.description as bdescription,
+               book.image,
+               category.id,
+               category.name,
+               category.description
+        from es_book book
+                 left join
+             es_category category on book.category_id = category.id
+        where book.category_id = #{id}
+    </select>
+</mapper>
